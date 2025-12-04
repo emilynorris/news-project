@@ -35,6 +35,9 @@ describe('GET /api/topics', () => {
         expect(typeof body.articles[7].comment_count).toBe("number")
 
         expect(body.articles[8]).not.toHaveProperty('body')
+
+        expect(new Date (body.articles[0].created_at)).toEqual(new Date(1604394720000))
+        expect(new Date (body.articles[12].created_at)).toEqual(new Date (1578406080000))
       })
   });
 });
