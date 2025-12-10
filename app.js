@@ -1,64 +1,22 @@
 const express = require("express");
 const app = express();
 const db = require("./db/connection");
+const {getAllArticles, getArticlesById, getArticleCommentsById, patchArticleVotesById} = require ("./controllers/articles.controllers")
+const {getAllTopics} = require ("./controllers/topics.controllers");
+const {getAllUsers} = require("./controllers/users.controllers");
 
-app
-.get("/api/topics", (request, response) => {
-    return db.query(`
-        SELECT 
-        slug, 
-        description 
-        FROM topics;
-        `)
-    .then (({ rows }) => {
-        // console.log ("topics", rows)
-        response.status(200).send({ topics: rows})
-    })
-})
+app.use('/api', express.static('public'))
 
-app.get("/api/articles", (request, response) => {
-    return db.query(`
-        SELECT 
-        a.article_id, 
-        a.author, 
-        a.title, 
-        a.topic, 
-        a.created_at, 
-        a.votes, 
-        a.article_img_url,
-        COUNT(c.comment_id)::int AS comment_count
-        FROM articles a 
-        LEFT JOIN comments c
-        ON a.article_id = c.article_id
-        GROUP BY a.article_id, a.author
-        ORDER BY a.created_at DESC;
-        `)
-    .then (({ rows }) => {
-        // console.log("articles", rows)
-        response.status(200).send({ articles: rows})
-    })
-})
+//articles
+app.get("/api/articles", getAllArticles)
+app.get("/api/articles/:article_id", getArticlesById) 
+app.get("/api/articles/:article_id/comments",getArticleCommentsById)
+app.patch("/api/articles/:article_id", patchArticleVotesById)
 
-app.get("/api/articles/:article_id", (request, response) => {
-    const { article_id } = request.params
-    return db.query(`
-        SELECT * FROM articles
-        WHERE article_id = ${article_id}
-        `)
-    .then (({ rows }) => {
-        console.log("article", rows)
-        response.status(200).send({ article: rows})
-    })
-})
+//topics
+app.get("/api/topics", getAllTopics)
 
-app.get("/api/users", (request,response) => {
-    return db.query(`SELECT * FROM users;`)
-    .then (({ rows }) => {
-        response.status(200).send({ users: rows})
-    })
-})
-
-
-
+//users
+app.get("/api/users", getAllUsers)
 
 module.exports = app
