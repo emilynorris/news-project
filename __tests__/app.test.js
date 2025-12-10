@@ -4,7 +4,7 @@ const data = require('../db/data/test-data/index');
 const app = require("../app.js");
 const db = require('../db/connection');
 
-beforeAll (() => seed(data));
+beforeEach (() => seed(data));
 afterAll(() => db.end());
 
 describe('GET /api/topics', () => {
@@ -24,6 +24,7 @@ describe('GET /api/topics', () => {
 
   describe('/api/articles', () => {
     test('GET: 200 - responds with array of objects for all articles' , () => {
+      console.log(get('/api/articles'))
       return request(app)
         .get('/api/articles')
         .expect(200)
@@ -77,6 +78,16 @@ describe('GET /api/topics', () => {
             expect(typeof comment.article_id).toBe("number")
           })
     })
+  })
+  test('PATCH: 200 - responds with article with updated votes' , () => {
+      return request(app)
+        .patch('/api/articles/1')
+        .send({inc_votes:37})
+        .expect(200)
+        .then (({body}) => {
+          expect(body.updatedArticle.votes).toBe(137)
+          expect(body.updatedArticle.article_id).toBe(1)
+      })
   })
 })
 

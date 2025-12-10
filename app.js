@@ -5,7 +5,8 @@ const {getAllArticles, getArticlesById, getArticleCommentsById, patchArticleVote
 const {getAllTopics} = require ("./controllers/topics.controllers");
 const {getAllUsers} = require("./controllers/users.controllers");
 
-app.use('/api', express.static('public'))
+app.use("/api", express.static('public', {index: "index.html"}))
+app.use(express.json())
 
 //articles
 app.get("/api/articles", getAllArticles)

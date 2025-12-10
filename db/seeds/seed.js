@@ -54,6 +54,12 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
         userData.map((user) => [user.username, user.name, user.avatar_url])
       );
 
+      const topics = db.query(topicsQueryString);
+      const users = db.query(usersQueryString);
+
+      return Promise.all([topics, users]);
+    })
+    .then(() => {
       const articlesQueryString = format(
         `INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url) VALUES %L RETURNING article_id, title`,
         articleData.map((article) => [
@@ -66,14 +72,9 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
           article.article_img_url,
         ])
       );
-
-      const topics = db.query(topicsQueryString);
-      const users = db.query(usersQueryString);
-      const articles = db.query(articlesQueryString);
-
-      return Promise.all([articles, topics, users]);
+      return db.query(articlesQueryString);
     })
-    .then(([articleResult]) => {
+    .then((articleResult) => {
       const articleInfo = articleResult.rows;
 
       const commentQueryString = format(
@@ -82,7 +83,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
           // Foreach Comment look through the articles data to find the
           // article_id that matches the article_title of the comment
           const { article_id } = articleInfo.find((info) => {
-            return info.article_title === comment.title;
+            return info.title === comment.article_title;
           });
           return [
             article_id,

@@ -1,4 +1,4 @@
-const {fetchAllArticles,fetchArticlesById, fetchArticleCommentsById, fetchArticleVotesById} = require ("../models/articles.models")
+const {fetchAllArticles,fetchArticlesById, fetchArticleCommentsById, updateArticleVotesById} = require ("../models/articles.models")
 
 function getAllArticles (req,res) {
     fetchAllArticles().then((articles) => {
@@ -21,9 +21,11 @@ function getArticleCommentsById (req,res,next) {
 }
 
 function patchArticleVotesById (req,res,next) {
-    const { article_id,updateVotes } = req.params
-    fetchArticleVotesById(article_id, updateVotes).then((updatedArticle) => {
-        res.status(204).send({updatedArticle})
+    const { article_id } = req.params
+    const { inc_votes } = req.body
+    console.log(inc_votes)
+    updateArticleVotesById(article_id, inc_votes).then((updatedArticle) => {
+        res.status(200).send({updatedArticle})
     })
 }
 
