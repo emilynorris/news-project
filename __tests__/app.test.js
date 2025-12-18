@@ -24,7 +24,6 @@ describe('GET /api/topics', () => {
 
   describe('/api/articles', () => {
     test('GET: 200 - responds with array of objects for all articles' , () => {
-      console.log(get('/api/articles'))
       return request(app)
         .get('/api/articles')
         .expect(200)
@@ -50,16 +49,15 @@ describe('GET /api/topics', () => {
         .get('/api/articles/5')
         .expect(200)
         .then (({body}) => {
-          expect(body.article[0].article_id).toBe(5)
-          expect(body.article.length).toBe(1)
-          expect(typeof body.article[0].author).toBe("string")
-          expect(typeof body.article[0].title).toBe("string")
-          expect(typeof body.article[0].article_id).toBe("number")
-          expect(typeof body.article[0].topic).toBe("string")
-          expect(typeof body.article[0].created_at).toBe("string")
-          expect(typeof body.article[0].votes).toBe("number")
-          expect(typeof body.article[0].article_img_url).toBe("string")
-          expect(typeof body.article[0].body).toBe("string")
+          expect(body.article.article_id).toBe(5)
+          expect(typeof body.article.author).toBe("string")
+          expect(typeof body.article.title).toBe("string")
+          expect(typeof body.article.article_id).toBe("number")
+          expect(typeof body.article.topic).toBe("string")
+          expect(typeof body.article.created_at).toBe("string")
+          expect(typeof body.article.votes).toBe("number")
+          expect(typeof body.article.article_img_url).toBe("string")
+          expect(typeof body.article.body).toBe("string")
         })
     })
     test('GET: 200 - responds with article comments filtered by article_id', () => {
@@ -85,6 +83,7 @@ describe('GET /api/topics', () => {
         .send({inc_votes:37})
         .expect(200)
         .then (({body}) => {
+          console.log(body)
           expect(body.updatedArticle.votes).toBe(137)
           expect(body.updatedArticle.article_id).toBe(1)
       })

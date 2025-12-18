@@ -32,7 +32,7 @@ function fetchArticlesById (article_id) {
         WHERE article_id = ${article_id}
         `)
       .then (({rows}) => {
-        return rows
+        return rows[0]
       })
 }
 
